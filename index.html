@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <!-- <script src="jquery.min.js"></script> -->
+    <script src="js/jquery.js"></script>
+</head>
+<style>
+    *{
+        margin:0;
+        padding: 0;
+    }
+    .top-box{
+        width:100%;
+        height:50px;
+        background: rgba(47,47,47,0.98);
+    }
+    .top{
+        width:600px;
+        height: 50px;
+        margin:0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .td{
+        width:100px;
+        height:50px;
+        font-size: 24px;
+        color: #ddd;
+        line-height:50px;
+    }
+    .top input{
+        width:360px;
+        height:24px;
+        font-size: 12px;
+        border: none;
+        box-shadow:0 1px 0 rgba(255,255,255,0.24), 0 1px 6px rgba(0,0,0,0.45) inset;
+        border-radius: 6px;
+        text-indent: 12px;
+        outline: none;
+    }
+    section{
+        width:600px;
+        height: auto;
+        margin: 0 auto;
+    }
+    .now,.end{
+        width:600px;
+        height:31px;
+        margin-top: 20px;
+        font-size: 1.5em;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    section .now p{
+        float:right;
+        width:20px;
+        height: 20px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 20px;
+        color: #666;
+        background: #E6E6FA;
+        font-size: 14px;
+    }
+    section .end p{
+        float:right;
+        width:20px;
+        height: 20px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 20px;
+        color: #666;
+        background: #E6E6FA;
+        font-size: 14px;
+    }
+    footer{
+        width:100%;
+        font-size: 14px;
+        text-align: center;
+        color:#666;
+        margin-top: 50px;
+    }
+    body{
+        background:#CDCDCD;
+    }
+    .nnow{
+        height: 32px;
+        line-height: 32px;
+        background: #fff;
+        position: relative;
+        margin-bottom: 10px;
+        padding: 0 45px;
+        border-radius: 3px;
+        border-left: 5px solid #629A9C;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+    }
+    .now-b,.end-b{
+        width:600px;
+        height:32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background:#ffffff;
+        border-radius: 3px;
+        border-left:5px solid #629A9C;
+        margin-top: 20px;
+    }
+    .end-b{
+        border-left: 5px solid #999;
+        opacity: 0.5;
+    }
+    .now-b input{
+        width:25px;
+        height: 25px;
+        margin-left: 12px;
+        cursor: pointer;
+    }
+    .end-b input{
+        width:25px;
+        height: 25px;
+        margin-left: 12px;
+        cursor: pointer;
+    }
+    .now-b p{
+        width:505px;
+        height:100%;
+        line-height: 32px;
+    }
+    .end-b p{
+        width:505px;
+        height:100%;
+        line-height: 32px;
+    }
+    .now-b a{
+        width:12px;
+        height: 10px;
+        display: block;
+        border: 6px double #fff;
+        border-radius: 14px;
+        text-align: center;
+        color: #fff;
+        font-size: 14px;
+        background: #ccc;
+        cursor: pointer;
+    }
+    .end-b a{
+        width:12px;
+        height: 10px;
+        display: block;
+        border: 6px double #fff;
+        border-radius: 14px;
+        text-align: center;
+        color: #fff;
+        font-size: 14px;
+        background: #ccc;
+    }
+</style>
+<body>
+<div class=top-box>
+    <div class=top>
+        <div class=td>ToDoList</div>
+        <form action="" onsubmit='return false'>
+            <input type="text" id='title' name='title' placeholder='添加ToDo'/>
+        </form>
+    </div>
+</div>
+<section class="todo">
+    <div class=now>正在进行
+        <p>0</p>
+    </div>
+    <div class=doing>
+        <!--<div class=now-b>-->
+            <!--<input type="checkbox" onchange='' />-->
+            <!--<p id=p-1></p>-->
+            <!--<a href=""></a>-->
+        <!--</div>-->
+    </div>
+    <div class=end>已经完成
+        <p>0</p>
+    </div>
+    <div class=done>
+        <!--<div class=end-b>-->
+            <!--<input type="checkbox" onchange='' />-->
+            <!--<p></p>-->
+            <!--<a href=""></a>-->
+        <!--</div>-->
+    </div>
+</section>
+<footer>
+    Copyright © 2014 todolist.cn clear
+</footer>
+</body>
+</html>
+<script>
+    var todo=[
+        {id:1,nr:'不会做不会写',status:true},
+        {id:2,nr:'缝缝补补又一年',status:true},
+        {id:3,nr:'夜空中最亮的星',status:false},
+        {id:4,nr:'我祈祷拥有一颗透明的心灵',status:false}
+    ]
+    let nextid=5;
+    if(localStorage.dat){
+        todo=JSON.parse(localStorage.dat)
+    }
+    if(localStorage.id){
+        nextid=JSON.parse(Number(localStorage.id))
+    }
+    function render(){
+        let doing=[];
+        let done=[];
+        todo.forEach(val=>{
+            if(val.status==true){
+                doing.push(val)
+            }else{
+                done.push(val);
+            }
+        })
+//        console.log(doing,done)
+        let str='';
+        doing.forEach(val=>{
+            str+=
+                `
+                <div id=${val.id} class=now-b>
+                    <input type="checkbox"/>
+                    <p>${val.nr}</p>
+                    <a class="del" href=""></a>
+                </div>
+                `
+        })
+        let atr=''
+        done.forEach(val=>{
+            atr+=
+                `
+             <div id=${val.id}  class=end-b>
+                <input type="checkbox" checked/>
+                <p>${val.nr}</p>
+                <a class="del" href=""></a>
+             </div>
+                `
+        })
+        $('.todo').find('.doing').html(str).end().find('.now>p').html(doing.length);
+        $('.todo').find('.done').html(atr).end().find('.end>p').html(done.length);
+    }
+    $('.todo').on('click','.del',function(e) {
+        e.preventDefault()
+        let id=$(this).closest('div').attr('id');
+        let index=todo.findIndex(val=>val.id==id);
+        todo.splice(index,1)      
+       localStorage.dat=JSON.stringify(todo);
+       localStorage.id=JSON.stringify(nextid);
+       render()
+    })
+        .on('click','p',function () {
+        let input=$('<input type=text>').val($(this).html()).css({'width':500})
+        let id=$(this).closest('div').attr('id')
+        $(this).html('').append(input)
+        input.focus();
+        input.change(function () {
+            let id=$(this).closest('div').attr('id')
+            let index=todo.findIndex(val=>val.id==id);
+            console.log(index)
+            todo[index].nr=$(this).val();
+            localStorage.dat=JSON.stringify(todo);
+            render()
+        })
+    }).on('click','input:checkbox',function () {
+        // console.log(1)
+        // let input=$('input').val($(this).html())
+        let id=$(this).closest('div').attr('id')
+        // console.log(id)
+        let index=todo.findIndex(val=>val.id==id);
+        console.log(index)
+        todo[index].status=!(todo[index].status);
+        localStorage.dat=JSON.stringify(todo);
+       localStorage.id=JSON.stringify(nextid);
+        render()
+    })
+    let input=$('#title');
+    // console.log(input)
+   input.on('keyup',function (e) {
+       if(e.which==13){
+        if($(this).val()==''){
+            alert('请重新输入')
+        }
+        else{
+
+        todo.unshift({id:nextid,nr:$(this).val(),status:true})
+        localStorage.dat=JSON.stringify(todo);
+       localStorage.id=JSON.stringify(nextid);
+               nextid++;
+               render()
+           }
+       }
+   })
+    render()
+</script>
